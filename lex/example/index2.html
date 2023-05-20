@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatbot de Amazon Lex</title>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
+  </head>
+  <body>
+    <div id="conversation"></div>
+    <input type="text" id="input-text" />
+    <button onclick="sendText()">Enviar</button>
+    <script>
+      // Configurar el cliente de Amazon Lex
+      var lexruntime = new AWS.LexRuntime();
+      var botAlias = 'BotAlias';
+      var botName = 'BotName';
+      var userId = 'UserId';
+
+      // Función para enviar el texto del usuario al bot
+      function sendText() {
+        var inputText = document.getElementById('input-text').value;
+
+        // Llamar a la API de Amazon Lex con la entrada del usuario
+        lexruntime.postText(
+          {
+            botAlias: botAlias,
+            botName: botName,
+            inputText: inputText,
+            userId: userId,
+          },
+          function (err, data) {
+            if (err) {
+              console.log(err, err.stack);
+            } else {
+              // Agregar la respuesta del bot al chat
+              var conversationDiv = document.getElementById('conversation');
+              var message = document.createElement('p');
+              message.innerHTML = '<strong>Tú: </strong>' + inputText;
+              conversationDiv.appendChild(message);
+
+              var message = document.createElement('p');
+              message.innerHTML = '<strong>Bot: </strong>' + data.message;
+              conversationDiv.appendChild(message);
+
+              // Borrar el campo de entrada de texto
+              document.getElementById('input-text').value = '';
+            }
+          }
+        );
+      }
+    </script>
+  </body>
+</html>

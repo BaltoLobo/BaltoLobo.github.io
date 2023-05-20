@@ -47,17 +47,56 @@ WL.registerComponent('CallAlex', {
 }, {
     init: function() {
         console.log('init() with param', this.param);
+
     },
     start: function() {
-        console.log('start() with param', this.param);
+        //Cargamos scripts aws
+        console.log('iniciando scripts Amazon LEX');
+        //script sdk aws
+        var script = document.createElement('script');
+        script.src = "https://sdk.amazonaws.com/js/aws-sdk-2.1343.0.min.js";
+        document.head.appendChild(script);
+        //script lex-audio
+        var script = document.createElement('script');
+        script.src = "dist/aws-lex-audio.js";
+        script.type = "text/javascript";
+        document.head.appendChild(script);
+        //script reder
+        var script = document.createElement('script');
+        script.src = "renderer.js";
+        script.type = "text/javascript";
+        document.head.appendChild(script);
+        
+        //agregamos elementos html que requiere Amazon LEX
+
+        var style = document.createElement('style');
+        style.type = 'text/css';
+        style.innerHTML = '.audio-control { display: none;}';
+        document.getElementsByTagName('head')[0].appendChild(style);
+
+
+         //Cargamos elementos html
+        // Create a new div element
+       var div = document.createElement('div');
+    
+        // Set the content of the div element
+        //div.className = "hidden";
+        div.className = "audio-control"
+        div.innerHTML = '<p id="audio-control" class="white-circle"> <img src="lex.png"><canvas class="visualizer"></canvas></p><p><span id="message"></span></p>';
+        // Add the div element to the body of the HTML page
+        document.body.appendChild(div);
+
     },
     update: function(dt) {
-        console.log('update() with delta time', dt);
+        console.log('Actualizanddo LEX');
+       
     },
 });
 
+
 WL.registerComponent('button', {
     buttonMeshObject: {type: WL.Type.Object},
+    buttonTextObject: {type: WL.Type.Object},
     hoverMaterial: {type: WL.Type.Material},
 }, {
     start: function() {
@@ -72,6 +111,43 @@ WL.registerComponent('button', {
 
         this.soundClick = this.object.addComponent('howler-audio-source', {src: 'sfx/click.wav', spatial: true});
         this.soundUnClick = this.object.addComponent('howler-audio-source', {src: 'sfx/unclick.wav', spatial: true});
+        this.textComponent = this.buttonTextObject.getComponent('text');
+        this.count = 0;
+        // importanmos funciones de AWS
+        //Cargamos scripts aws
+        console.log('iniciando scripts Amazon LEX');
+        //script sdk aws
+        var script = document.createElement('script');
+        script.src = "https://sdk.amazonaws.com/js/aws-sdk-2.1343.0.min.js";
+        document.head.appendChild(script);
+        //script lex-audio
+        var script = document.createElement('script');
+        script.src = "dist/aws-lex-audio.js";
+        script.type = "text/javascript";
+        document.head.appendChild(script);
+        //script reder
+        var script = document.createElement('script');
+        script.src = "renderer.js";
+        script.type = "text/javascript";
+        document.head.appendChild(script);
+        
+        //agregamos elementos html que requiere Amazon LEX
+
+        var style = document.createElement('style');
+        style.type = 'text/css';
+        style.innerHTML = '.audio-control { display: none;}';
+        document.getElementsByTagName('head')[0].appendChild(style);
+
+         //Cargamos elementos html
+        // Create a new div element
+       var div = document.createElement('div');
+    
+        // Set the content of the div element
+        //div.className = "hidden";
+        div.className = "audio-control"
+        div.innerHTML = '<p id="audio-control" class="white-circle"> <img src="lex.png"><canvas class="visualizer"></canvas></p><p><span id="message"></span></p>';
+        // Add the div element to the body of the HTML page
+        document.body.appendChild(div);
     },
 
     onHover: function(_, cursor) {
@@ -93,6 +169,39 @@ WL.registerComponent('button', {
         this.soundUnClick.play();
         this.buttonMeshObject.translate([0.0, 0.1, 0.0]);
         this.hapticFeedback(cursor.object, 0.7, 20);
+        this.count++;
+        this.textComponent.text = "Speak! x:" + this.count.toString();
+        
+        // Funciones AWS
+        var waveform = window.Waveform();
+        var message = document.getElementById('message');
+        var config, conversation;
+        message.textContent = 'Passive';
+
+        AWS.config.credentials = new AWS.Credentials("dfdfadfsdfdd", "dfdfdfdfdf", null);
+        AWS.config.region = 'us-east-1';
+       //console.log(AWS.config.credentials);
+        config = {
+            lexConfig: { botName: "Reservaunhotel" }
+        };
+
+        conversation = new LexAudio.conversation(config, function (state) {
+            message.textContent = state + '...';
+            if (state === 'Listening') {
+                waveform.prepCanvas();
+            }
+            if (state === 'Sending') {
+                waveform.clearCanvas();
+            }
+        }, function (data) {
+            console.log('Transcript: ', data.inputTranscript, ", Response: ", data.message);
+        }, function (error) {
+            message.textContent = error;
+        }, function (timeDomain, bufferLength) {
+            waveform.visualizeAudioBuffer(timeDomain, bufferLength);
+        });
+
+        conversation.advanceConversation();
     },
 
     onUnHover: function(_, cursor) {
