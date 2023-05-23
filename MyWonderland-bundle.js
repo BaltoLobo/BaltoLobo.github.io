@@ -178,7 +178,7 @@ WL.registerComponent('button', {
         var config, conversation;
         message.textContent = 'Passive';
 
-        AWS.config.credentials = new AWS.Credentials("AKIAXAOA3E3CEFXGAJNS", "8mKEmkAZUvxG28YJBOOZlxp4jYui29SnoHB1yq8s", null);
+        AWS.config.credentials = new AWS.Credentials("AKIAXAOA3E3CATIDQBU2", "Rr7RY15T6cGqvE3oLJt1fe/yBRnEanbrECQJhZNk", null);
         AWS.config.region = 'us-east-1';
        //console.log(AWS.config.credentials);
         config = {
