@@ -422,7 +422,7 @@ WL.registerComponent('button3', {
         AWS.config.region = 'us-east-1';
        //console.log(AWS.config.credentials);
         config = {
-            lexConfig: { botName: "OrderFlowers_esLATAM" }
+            lexConfig: { botName: "MakeAppointment_esLATAM" }
         };
 
         conversation = new LexAudio.conversation(config, function (state) {
