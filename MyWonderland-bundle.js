@@ -233,6 +233,7 @@ WL.registerComponent('button2', {
 
         this.soundClick = this.object.addComponent('howler-audio-source', {src: 'sfx/click.wav', spatial: true});
         this.soundUnClick = this.object.addComponent('howler-audio-source', {src: 'sfx/unclick.wav', spatial: true});
+        /*
         // importanmos funciones de AWS
         //Cargamos scripts aws
         console.log('iniciando scripts Amazon LEX');
@@ -268,6 +269,7 @@ WL.registerComponent('button2', {
         div.innerHTML = '<p id="audio-control" class="white-circle"> <img src="lex.png"><canvas class="visualizer"></canvas></p><p><span id="message"></span></p>';
         // Add the div element to the body of the HTML page
         document.body.appendChild(div);
+        */
     },
 
     onHover: function(_, cursor) {
@@ -356,6 +358,7 @@ WL.registerComponent('button3', {
 
         this.soundClick = this.object.addComponent('howler-audio-source', {src: 'sfx/click.wav', spatial: true});
         this.soundUnClick = this.object.addComponent('howler-audio-source', {src: 'sfx/unclick.wav', spatial: true});
+        /*
         // importanmos funciones de AWS
         //Cargamos scripts aws
         console.log('iniciando scripts Amazon LEX');
@@ -391,6 +394,7 @@ WL.registerComponent('button3', {
         div.innerHTML = '<p id="audio-control" class="white-circle"> <img src="lex.png"><canvas class="visualizer"></canvas></p><p><span id="message"></span></p>';
         // Add the div element to the body of the HTML page
         document.body.appendChild(div);
+        */
     },
 
     onHover: function(_, cursor) {
@@ -422,7 +426,7 @@ WL.registerComponent('button3', {
         AWS.config.region = 'us-east-1';
        //console.log(AWS.config.credentials);
         config = {
-            lexConfig: { botName: "MakeAppointment_esLATAM" }
+            lexConfig: { botName: "ScheduleAppointment_esLATAM" }
         };
 
         conversation = new LexAudio.conversation(config, function (state) {
